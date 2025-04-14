@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Programming Language</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="card">
+        <input type="text" class="search" placeholder="search..">
+        <div class="concepts-container">
+            {% for language in languages %}
+                <a href="/concepts?language={{ language }}" class="concept-btn">{{ language }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='searching.js') }}"></script>
+
+</body>
+</html>
+
+

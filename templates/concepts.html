@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ language }} Concepts</title>
+    <link rel="stylesheet" href="/static/concepts.css">
+</head>
+<body>
+    <div class="card">
+        <h1>{{ language }} Concepts</h1>
+        <div class="concepts-container">
+            {% for concept in concepts %}
+                <a href="/quiz?language={{ language }}&concept={{ concept }}" class="concept-btn">{{ concept }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+

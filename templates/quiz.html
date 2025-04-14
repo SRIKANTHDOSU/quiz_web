@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f0f8ff;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .question {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .op {
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+    }
+
+    .option-box {
+      display: flex;
+      align-items: center;
+      border: 1px solid #cce5ff;
+      border-radius: 5px;
+      background-color: #fff;
+      cursor: pointer;
+      margin: 5px 0;
+      transition: 0.3s;
+    }
+
+    .option-box:hover {
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .option-letter {
+      width: 40px;
+      text-align: center;
+      padding: 10px 0;
+      background-color: #3399ff;
+      color: white;
+      font-weight: bold;
+    }
+
+    .option-text {
+      flex: 1;
+      padding: 10px;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    .correct {
+      background-color: #d4edda !important;
+      border: 2px solid #28a745 !important;
+    }
+
+    .wrong {
+      background-color: #f8d7da !important;
+      border: 2px solid #dc3545 !important;
+    }
+
+    .submit-btn {
+      display: block;
+      margin: 30px auto;
+      padding: 10px 25px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .play-again {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+
+
+
+    .option-box.selected .tick-mark {
+      display: inline;
+    }
+
+    /* Highlight selected option */
+    .option-box.selected {
+      border: 2px solid #007bff;
+      background-color: #e6f0ff;
+      position: relative;
+    }
+
+    /* Tick mark using pseudo-element */
+    .option-box.selected::before {
+      content: '✔';
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .btn {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #218838;
+    }
+
+    .ex {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+
+    .ex:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Quiz: {{ concept }} ({{ topic }})</h2>
+
+  <form id="quizForm" data-total="{{ questions|length }}">
+    {% for q in questions %}
+    {% set q_index = loop.index %}
+    <div class="question">
+      <p><strong>Q{{ q_index }}. {{ q.question }}</strong></p>
+
+      <div class="options" id="options_q{{ q_index }}">
+        {% for key, option in q.options.items() %}
+        <div class="op">
+          <input type="radio" name="q{{ q_index }}" value="{{ key }}" id="q{{ q_index }}_{{ key }}">
+          <label class="option-box" for="q{{ q_index }}_{{ key }}">
+            <span class="option-letter">{{ key }}</span>
+            <span class="option-text">{{ option }}</span>
+            <span class="tick-mark" style="margin-left:auto; padding-right:10px; display:none;">✔️</span>
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+
+      <input type="hidden" id="answer_q{{ q_index }}" value="{{ q.answer }}">
+      <input type="hidden" id="explanation_q{{ q_index }}" value="{{ q.explanation }}">
+
+    </div>
+    {% endfor %}
+
+    <button type="button" class="submit-btn" onclick="submitQuiz()">Submit</button>
+
+    <div class="result" id="resultBox"></div>
+
+    <div class="play-again" id="playAgainBox" style="display:none;">
+      <p>Do you want to try again with the same concept?</p>
+      <a id="retryLink" class="btn" href="#">🔁 Yes, try again</a>
+      <a id="explanationLink" class="ex" href="#">Explanation</a>
+
+    </div>
+
+
+  </form>
+
+  <script>
+    const topic = "{{ topic }}";
+    const concept = "{{ concept }}";
+    function submitQuiz() {
+      let totalQuestions = document.querySelectorAll(".question").length;
+      let score = 0;
+      let allData = [];
+
+      for (let i = 1; i <= totalQuestions; i++) {
+        let options = document.getElementsByName("q" + i);
+        let correctAnswer = document.getElementById("answer_q" + i).value;
+        let selected = "";
+        let explanationInput = document.getElementById("explanation_q" + i); // optional
+        let explanation = explanationInput ? explanationInput.value : "Explanation not available.";
+
+        for (let opt of options) {
+          if (opt.checked) {
+            selected = opt.value;
+            break;
+          }
+        }
+
+        let labels = document.querySelectorAll(`input[name="q${i}"] ~ label`);
+        labels.forEach(label => {
+          const input = document.querySelector(`#${label.getAttribute("for")}`);
+          const val = input.value;
+          if (val === correctAnswer) {
+            label.classList.add("correct");
+          }
+          if (val === selected && val !== correctAnswer) {
+            label.classList.add("wrong");
+          }
+        });
+
+        if (selected === correctAnswer) {
+          score++;
+        }
+
+        const questionText = document.querySelector(`.question:nth-of-type(${i}) strong`).innerText;
+
+        allData.push({
+          question: questionText,
+          selectedAnswer: selected || "Not Answered",
+          correctAnswer: correctAnswer,
+          explanation: explanation
+        });
+      }
+
+      // Show result
+      document.getElementById("resultBox").innerHTML = `You scored ${score} out of ${totalQuestions}`;
+      document.getElementById("playAgainBox").style.display = "block";
+
+      // Set dynamic explanation link
+      const explanationLink = document.getElementById("explanationLink");
+      const encodedData = encodeURIComponent(JSON.stringify(allData));
+      explanationLink.href = `/explanation?score=${score}&total=${totalQuestions}&data=${encodedData}`;
+    }
+
+    function updateTickMarks() {
+      const questions = document.querySelectorAll(".question");
+      questions.forEach((q, index) => {
+        const qNum = index + 1;
+        const options = document.getElementsByName("q" + qNum);
+        options.forEach((opt) => {
+          const label = document.querySelector(`label[for="${opt.id}"]`);
+          if (opt.checked) {
+            label.classList.add("selected");
+          } else {
+            label.classList.remove("selected");
+          }
+        });
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const radios = document.querySelectorAll("input[type=radio]");
+      radios.forEach((r) => {
+        r.addEventListener("change", updateTickMarks);
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      const topic = params.get('language');
+      const concept = params.get('concept');
+      if (topic && concept) {
+        const retryLink = document.getElementById("retryLink");
+        retryLink.href = `/quiz?language=${encodeURIComponent(topic)}&concept=${encodeURIComponent(concept)}`;
+      }
+    });
+
+
+  </script>
+
+
+
+</body>
+
+
+
+</html>

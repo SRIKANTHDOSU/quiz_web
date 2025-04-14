@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f0f8ff;
+    }
+
+    h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .question {
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .option {
+      font-size: 14px;
+      font-weight: normal;
+      margin-top: 10px;
+    }
+
+    .correct {
+      color: green;
+    }
+
+    .wrong {
+      color: red;
+    }
+
+    .explanation {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #ccc;
+    }
+
+    #retryLink {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+
+    #retryLink:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+   
+  <h3>Quiz Results</h3>
+
+  <!-- Container to display the quiz results dynamically -->
+  <div id="quizResults"></div>
+
+  <!-- Retry link to allow the user to attempt the quiz again -->
+  <a id="retryLink" href="javascript:void(0);" onclick="history.back()">🔁GO BACK</a>
+
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // Retrieve query parameters from URL
+      const params = new URLSearchParams(window.location.search);
+      const score = params.get('score');
+      const total = params.get('total');
+      const data = JSON.parse(decodeURIComponent(params.get('data')));
+  
+      // Build the result header
+      let resultHtml = `<h3>Your Score: ${score} out of ${total}</h3><hr>`;
+      let questionsHtml = '';
+  
+      // Loop through the quiz data and build the results section
+      data.forEach((qData, index) => {
+        questionsHtml += `
+          <div class="question">
+            <p><strong>Q${index + 1}. ${qData.question}</strong></p>
+            <p><span class="option ${qData.selectedAnswer === qData.correctAnswer ? 'correct' : 'wrong'}">
+              Your Answer: ${qData.selectedAnswer} | Correct Answer: ${qData.correctAnswer}</span></p>
+            <div class="explanation">
+              <strong>Explanation:</strong>
+              <p>${qData.explanation}</p>
+            </div>
+          </div>
+        `;
+      });
+  
+      resultHtml += questionsHtml;
+      document.getElementById('quizResults').innerHTML = resultHtml;
+  
+      // DO NOT override retryLink href – let it use history.back()
+      // const retryLink = document.getElementById('retryLink');
+      // const topic = params.get('language');
+      // const concept = params.get('concept');
+      // retryLink.href = `/quiz?language=${encodeURIComponent(topic)}&concept=${encodeURIComponent(concept)}`;
+    });
+  </script>
+  
+
+</body>
+</html>
