@@ -35,11 +35,11 @@ def quiz():
     
     return render_template("quiz.html", topic=language, concept=concept, questions=questions)
 
-@app.route('/explanation')
+@app.route('/explanation', methods=['POST'])
 def explanation():
-    score = request.args.get('score')
-    total = request.args.get('total')
-    data = json.loads(request.args.get('data'))
+    score = request.form.get('score')
+    total = request.form.get('total')
+    data = json.loads(request.form.get('data'))
     return render_template('explanation.html', score=score, total=total, data=data)
 
 if __name__ == "__main__":
