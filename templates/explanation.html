@@ -80,16 +80,23 @@
     const score = quizResults.dataset.score;
     const total = quizResults.dataset.total;
     const data = JSON.parse(quizResults.dataset.data);
-
+  
     // Build the result header
     let resultHtml = `<h3>Your Score: ${score} out of ${total}</h3><hr>`;
     let questionsHtml = '';
-
+  
     // Loop through the quiz data and build the results section
     data.forEach((qData, index) => {
+      // Check if the question already starts with 'Q' followed by a number
+      const questionText = qData.question.trim();
+      const questionNumberPattern = /^Q\d+\.\s/;
+      const displayQuestion = questionNumberPattern.test(questionText)
+        ? questionText
+        : `Q${index + 1}. ${questionText}`;
+  
       questionsHtml += `
         <div class="question">
-          <p><strong>Q${index + 1}. ${qData.question}</strong></p>
+          <p><strong>${displayQuestion}</strong></p>
           <p><span class="option ${qData.selectedAnswer === qData.correctAnswer ? 'correct' : 'wrong'}">
             Your Answer: ${qData.selectedAnswer} | Correct Answer: ${qData.correctAnswer}</span></p>
           <div class="explanation">
@@ -99,14 +106,14 @@
         </div>
       `;
     });
-
+  
     resultHtml += questionsHtml;
     quizResults.innerHTML = resultHtml;
   });
-</script>
+  
 
     
  
-
+</script>
 </body>
 </html>
