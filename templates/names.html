@@ -11,7 +11,8 @@
         <input type="text" class="search" placeholder="search..">
         <div class="concepts-container">
             {% for language in languages %}
-                <a href="/concepts?language={{ language }}" class="concept-btn">{{ language }}</a>
+            <a href="/concepts?language={{ language | urlencode }}" class="concept-btn">{{ language }}</a>
+
             {% endfor %}
         </div>
     </div>

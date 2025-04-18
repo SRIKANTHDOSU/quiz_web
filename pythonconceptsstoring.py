@@ -311,32 +311,8 @@ concepts = {
     "Using Third-party Packages", "CLI Applications in Go", "Go Routines with WaitGroups", 
     "Testing with Mocking", "Embedding Files (embed package - Go 1.16+)"
 ],
-"C++": [
-    "Basic Syntax and Program Structure", "Variables and Data Types", "Constants and Macros",
-    "Operators (Arithmetic, Relational, Logical, Bitwise, Assignment)", 
-    "Input and Output (cin, cout, getline)", "Control Structures (if, else, switch)", 
-    "Loops (for, while, do-while)", "Functions and Function Overloading", "Default Parameters in Functions",
-    "Recursion", "Arrays and Multidimensional Arrays", "Pointers and References", 
-    "Dynamic Memory Allocation (new, delete)", "Strings (C-style and std::string)", 
-    "Structures (`struct`) and Unions", "Enumerations (`enum`)", 
-    "Object-Oriented Programming (Classes and Objects)", "Constructors and Destructors", 
-    "Access Specifiers (public, private, protected)", "Static Members", 
-    "Friend Functions and Friend Classes", "Inheritance (Single, Multiple, Multilevel, Hierarchical)", 
-    "Polymorphism (Compile-time and Run-time)", "Virtual Functions and Abstract Classes", 
-    "Operator Overloading", "Function Templates and Class Templates", 
-    "Exception Handling (try, catch, throw)", "Namespaces", 
-    "Standard Template Library (STL)", "STL Containers (vector, map, set, list, unordered_map)", 
-    "STL Algorithms (sort, find, for_each, etc.)", "STL Iterators", 
-    "File Handling (ifstream, ofstream, fstream)", "Type Casting (static_cast, dynamic_cast, etc.)", 
-    "Preprocessor Directives (#define, #include, #ifdef)", "Const Correctness", 
-    "Lambda Expressions (C++11 and later)", "Smart Pointers (unique_ptr, shared_ptr, weak_ptr)", 
-    "Move Semantics and Rvalue References", "Multithreading (std::thread, mutex, lock_guard)", 
-    "Function Pointers", "RAII (Resource Acquisition Is Initialization)", 
-    "C++11/14/17/20 Features", "Compile-time Programming with `constexpr`", 
-    "Design Patterns in C++ (Singleton, Factory, Observer)", 
-    "Build Systems and Makefiles", "Linking and Compilation Process"
-],
-"C#": [
+
+"c_#": [
     "Basic Syntax and Program Structure", "Variables and Data Types", "Constants and Literals",
     "Operators (Arithmetic, Logical, Relational, Bitwise)", "Control Structures (if, else, switch)",
     "Loops (for, while, do-while, foreach)", "Methods (Functions)", "Parameters (ref, out, params)",
