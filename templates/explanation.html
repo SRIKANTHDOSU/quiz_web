@@ -69,50 +69,44 @@
   <h3>Quiz Results</h3>
 
   <!-- Container to display the quiz results dynamically -->
-  <div id="quizResults"></div>
+  <div id="quizResults" data-score="{{ score }}" data-total="{{ total }}" data-data='{{ data|tojson }}'></div>
+
 
   <!-- Retry link to allow the user to attempt the quiz again -->
   <a id="retryLink" href="javascript:void(0);" onclick="history.back()">🔁GO BACK</a>
-
-
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      // Retrieve query parameters from URL
-      const params = new URLSearchParams(window.location.search);
-      const score = params.get('score');
-      const total = params.get('total');
-      const data = JSON.parse(decodeURIComponent(params.get('data')));
-  
-      // Build the result header
-      let resultHtml = `<h3>Your Score: ${score} out of ${total}</h3><hr>`;
-      let questionsHtml = '';
-  
-      // Loop through the quiz data and build the results section
-      data.forEach((qData, index) => {
-        questionsHtml += `
-          <div class="question">
-            <p><strong>Q${index + 1}. ${qData.question}</strong></p>
-            <p><span class="option ${qData.selectedAnswer === qData.correctAnswer ? 'correct' : 'wrong'}">
-              Your Answer: ${qData.selectedAnswer} | Correct Answer: ${qData.correctAnswer}</span></p>
-            <div class="explanation">
-              <strong>Explanation:</strong>
-              <p>${qData.explanation}</p>
-            </div>
+  window.addEventListener('DOMContentLoaded', () => {
+    const quizResults = document.getElementById('quizResults');
+    const score = quizResults.dataset.score;
+    const total = quizResults.dataset.total;
+    const data = JSON.parse(quizResults.dataset.data);
+
+    // Build the result header
+    let resultHtml = `<h3>Your Score: ${score} out of ${total}</h3><hr>`;
+    let questionsHtml = '';
+
+    // Loop through the quiz data and build the results section
+    data.forEach((qData, index) => {
+      questionsHtml += `
+        <div class="question">
+          <p><strong>Q${index + 1}. ${qData.question}</strong></p>
+          <p><span class="option ${qData.selectedAnswer === qData.correctAnswer ? 'correct' : 'wrong'}">
+            Your Answer: ${qData.selectedAnswer} | Correct Answer: ${qData.correctAnswer}</span></p>
+          <div class="explanation">
+            <strong>Explanation:</strong>
+            <p>${qData.explanation}</p>
           </div>
-        `;
-      });
-  
-      resultHtml += questionsHtml;
-      document.getElementById('quizResults').innerHTML = resultHtml;
-  
-      // DO NOT override retryLink href – let it use history.back()
-      // const retryLink = document.getElementById('retryLink');
-      // const topic = params.get('language');
-      // const concept = params.get('concept');
-      // retryLink.href = `/quiz?language=${encodeURIComponent(topic)}&concept=${encodeURIComponent(concept)}`;
+        </div>
+      `;
     });
-  </script>
-  
+
+    resultHtml += questionsHtml;
+    quizResults.innerHTML = resultHtml;
+  });
+</script>
+
+    
+ 
 
 </body>
 </html>

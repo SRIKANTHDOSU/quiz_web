@@ -207,29 +207,29 @@
 
 
   </form>
-
   <script>
     const topic = "{{ topic }}";
     const concept = "{{ concept }}";
+  
     function submitQuiz() {
       let totalQuestions = document.querySelectorAll(".question").length;
       let score = 0;
       let allData = [];
-
+  
       for (let i = 1; i <= totalQuestions; i++) {
         let options = document.getElementsByName("q" + i);
         let correctAnswer = document.getElementById("answer_q" + i).value;
         let selected = "";
-        let explanationInput = document.getElementById("explanation_q" + i); // optional
+        let explanationInput = document.getElementById("explanation_q" + i); 
         let explanation = explanationInput ? explanationInput.value : "Explanation not available.";
-
+  
         for (let opt of options) {
           if (opt.checked) {
             selected = opt.value;
             break;
           }
         }
-
+  
         let labels = document.querySelectorAll(`input[name="q${i}"] ~ label`);
         labels.forEach(label => {
           const input = document.querySelector(`#${label.getAttribute("for")}`);
@@ -241,13 +241,13 @@
             label.classList.add("wrong");
           }
         });
-
+  
         if (selected === correctAnswer) {
           score++;
         }
-
+  
         const questionText = document.querySelector(`.question:nth-of-type(${i}) strong`).innerText;
-
+  
         allData.push({
           question: questionText,
           selectedAnswer: selected || "Not Answered",
@@ -255,17 +255,47 @@
           explanation: explanation
         });
       }
-
+  
       // Show result
       document.getElementById("resultBox").innerHTML = `You scored ${score} out of ${totalQuestions}`;
       document.getElementById("playAgainBox").style.display = "block";
-
-      // Set dynamic explanation link
+  
+      // 🔄 Use POST instead of long GET
       const explanationLink = document.getElementById("explanationLink");
-      const encodedData = encodeURIComponent(JSON.stringify(allData));
-      explanationLink.href = `/explanation?score=${score}&total=${totalQuestions}&data=${encodedData}`;
+      explanationLink.addEventListener("click", function (e) {
+        e.preventDefault(); // stop default link behavior
+        postToExplanation(score, totalQuestions, allData); // send data via POST
+      });
     }
-
+  
+    function postToExplanation(score, total, data) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/explanation';
+  
+      const scoreInput = document.createElement('input');
+      scoreInput.type = 'hidden';
+      scoreInput.name = 'score';
+      scoreInput.value = score;
+  
+      const totalInput = document.createElement('input');
+      totalInput.type = 'hidden';
+      totalInput.name = 'total';
+      totalInput.value = total;
+  
+      const dataInput = document.createElement('input');
+      dataInput.type = 'hidden';
+      dataInput.name = 'data';
+      dataInput.value = JSON.stringify(data);
+  
+      form.appendChild(scoreInput);
+      form.appendChild(totalInput);
+      form.appendChild(dataInput);
+  
+      document.body.appendChild(form);
+      form.submit();
+    }
+  
     function updateTickMarks() {
       const questions = document.querySelectorAll(".question");
       questions.forEach((q, index) => {
@@ -281,13 +311,13 @@
         });
       });
     }
-
+  
     window.addEventListener("DOMContentLoaded", () => {
       const radios = document.querySelectorAll("input[type=radio]");
       radios.forEach((r) => {
         r.addEventListener("change", updateTickMarks);
       });
-
+  
       const params = new URLSearchParams(window.location.search);
       const topic = params.get('language');
       const concept = params.get('concept');
@@ -296,12 +326,7 @@
         retryLink.href = `/quiz?language=${encodeURIComponent(topic)}&concept=${encodeURIComponent(concept)}`;
       }
     });
-
-
   </script>
-
-
-
 </body>
 
 

@@ -37,11 +37,13 @@ def quiz():
 
 @app.route('/explanation', methods=['POST'])
 def explanation():
-    score = request.form.get('score')
-    total = request.form.get('total')
-    data = json.loads(request.form.get('data'))
-    return render_template('explanation.html', score=score, total=total, data=data)
+    # Retrieve data from the POST request
+    score = int(request.form['score'])
+    total = int(request.form['total'])
+    data = json.loads(request.form['data'])
 
+    # Render the explanation page with the data
+    return render_template('explanation.html', score=score, total=total, data=data)
 if __name__ == "__main__":
     app.run(debug=True)
 
